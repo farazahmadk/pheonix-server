@@ -12,7 +12,7 @@
 	<artifactId>pheonix-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>pheonix-server</name>
+	<name>phoenix-server</name>
 	<description>Sample formatter project which uses Spotless with Google java format style</description>
 	<properties>
 		<java.version>1.8</java.version>
@@ -41,9 +41,21 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.diffplug.spotless</groupId>
-			<artifactId>spotless-maven-plugin</artifactId>
-			<version>2.17.5</version>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.2</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId> <!-- or jjwt-gson if Gson is preferred -->
+			<version>0.11.2</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
@@ -59,7 +71,7 @@
 				<version>${spotless.version}</version>
 				<configuration>
 					<!-- optional: limit format enforcement to just the files changed by this feature branch -->
-					<ratchetFrom>origin/main</ratchetFrom>
+					<ratchetFrom>origin/master</ratchetFrom>
 					<formats>
 						<!-- you can define as many formats as you want, each is independent -->
 						<format>
@@ -79,22 +91,14 @@
 					</formats>
 					<!-- define a language-specific format -->
 					<java>
-						<!-- no need to specify files, inferred automatically, but you can if you want -->
-
-						<!-- apply a specific flavor of google-java-format and reflow long strings -->
-						<!--						<googleJavaFormat>-->
-						<!--							<version>1.8</version>-->
-						<!--							<style>AOSP</style>-->
-						<!--							<reflowLongStrings>true</reflowLongStrings>-->
-						<!--						</googleJavaFormat>-->
-
 						<googleJavaFormat>
-							<version>1.8</version>                      <!-- optional -->
+<!--							<version>1.7</version>                      &lt;!&ndash; optional: 1.7 if using jdk 8 &ndash;&gt;-->
 							<style>GOOGLE</style>                       <!-- or AOSP (optional) -->
 							<reflowLongStrings>true</reflowLongStrings> <!-- optional (requires at least 1.8) -->
-							<!-- optional: custom group artifact (you probably don't need this) -->
-							<groupArtifact>com.google.googlejavaformat:google-java-format</groupArtifact>
 						</googleJavaFormat>
+						<!--<eclipse>
+							<file>${project.basedir}/formatter.xml</file>
+						</eclipse>-->
 						<!-- make sure every file has the following copyright header.
                           optionally, Spotless can set copyright years by digging
                           through git history (see "license" section below) -->
@@ -103,6 +107,26 @@
 						</licenseHeader>
 					</java>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>testCompile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>
